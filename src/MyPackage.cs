@@ -16,13 +16,11 @@ namespace AsyncToolWindowSample
     [ProvideToolWindow(typeof(SampleToolWindow),
         Style = VsDockStyle.Tabbed, DockedWidth = 300,
         Window = "DocumentWell", Orientation = ToolWindowOrientation.Left)]
-    // Config Editor Tool Window — đăng ký riêng
     [ProvideToolWindow(typeof(ConfigEditorWindow),
         Style = VsDockStyle.Tabbed, DockedWidth = 480,
         Window = "DocumentWell", Orientation = ToolWindowOrientation.Right)]
     [Guid(PackageGuids.PackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    // §10: register the Options page under Tools › Options
     [ProvideOptionPage(typeof(SampleOptionsPage),
         "Async Tool Window Sample", "General",
         categoryResourceID: 0, pageNameResourceID: 0,
@@ -44,7 +42,7 @@ namespace AsyncToolWindowSample
             CancellationToken cancellationToken,
             IProgress<ServiceProgressData> progress)
         {
-            // ── Construct all services (background thread) ────────────────
+            // ── Construct services ────────────────────────────────────────
             OutputWindow = new OutputWindowService(this);
             StatusBar    = new StatusBarService(this);
             Selection    = new SelectionService(this);
@@ -52,33 +50,25 @@ namespace AsyncToolWindowSample
             Project      = new ProjectService(this);
             Options      = new OptionsService(this);
             Config       = new ConfigurationService(this, OutputWindow);
+            Events       = new EventService(this, OutputWindow);
+            Toolbar      = new ToolbarService(this, OutputWindow);
+            Menu         = new MenuService(this);
 
-            // EventService needs OutputWindow already constructed
-            Events  = new EventService(this, OutputWindow);
-
-            // ToolbarService needs OutputWindow
-            Toolbar = new ToolbarService(this, OutputWindow);
-
-            // MenuService registers OleMenuCommands — must be called later on UI thread
-            Menu = new MenuService(this);
-
-            // ── Async init (may still be on background thread) ────────────
+            // ── Async init ────────────────────────────────────────────────
             await OutputWindow.InitializeAsync();
             await StatusBar.InitializeAsync();
             await Selection.InitializeAsync();
             await Config.InitializeAsync();
 
-            // ── Switch to UI thread for everything that needs COM ─────────
+            // ── Switch to UI thread ───────────────────────────────────────
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-            // Show Tool Window command (existing)
             await ShowToolWindow.InitializeAsync(this);
-
-            // §6: register the three dynamic OleMenuCommands
             await Menu.InitializeAsync();
-
-            // Register Config Editor open command
             await ShowConfigEditor.InitializeAsync(this);
+
+            // §Settings: đăng ký lệnh mở Settings dialog từ Tools menu
+            await ShowSettings.InitializeAsync(this);
 
             OutputWindow.Log("AsyncToolWindowSample loaded successfully.");
             StatusBar.SetText("Async Tool Window Sample loaded.");
@@ -95,7 +85,7 @@ namespace AsyncToolWindowSample
 
         protected override string GetToolWindowTitle(Type toolWindowType, int id)
         {
-            if (toolWindowType == typeof(SampleToolWindow))  return SampleToolWindow.Title;
+            if (toolWindowType == typeof(SampleToolWindow))   return SampleToolWindow.Title;
             if (toolWindowType == typeof(ConfigEditorWindow)) return ConfigEditorWindow.Title;
             return base.GetToolWindowTitle(toolWindowType, id);
         }
@@ -105,7 +95,6 @@ namespace AsyncToolWindowSample
         {
             var dte = await GetServiceAsync(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
 
-            // SampleToolWindow state
             if (toolWindowType == typeof(SampleToolWindow))
             {
                 return new SampleToolWindowState
@@ -124,7 +113,6 @@ namespace AsyncToolWindowSample
                 };
             }
 
-            // ConfigEditorWindow state
             if (toolWindowType == typeof(ConfigEditorWindow))
             {
                 return new ConfigEditorState
@@ -141,9 +129,7 @@ namespace AsyncToolWindowSample
         protected override void Dispose(bool disposing)
         {
             if (disposing)
-            {
                 Events?.Dispose();
-            }
             base.Dispose(disposing);
         }
     }

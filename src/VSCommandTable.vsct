@@ -13,12 +13,17 @@
     <!-- ================================================================ -->
     <Groups>
 
-      <!-- Group under Tools menu for the three dynamic commands -->
+      <!-- Group under Tools menu for dynamic commands -->
       <Group guid="guidMyPackageCmdSet" id="DynamicCmdGroup" priority="0x0700">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
       </Group>
 
-      <!-- Group in the code-editor context menu for the ContextInfo command -->
+      <!-- Group under Tools menu for Settings (separator-style, priority thấp hơn) -->
+      <Group guid="guidMyPackageCmdSet" id="SettingsCmdGroup" priority="0x0800">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
+      </Group>
+
+      <!-- Group in code-editor context menu -->
       <Group guid="guidMyPackageCmdSet" id="ContextMenuGroup" priority="0x0100">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN"/>
       </Group>
@@ -30,7 +35,7 @@
     <!-- ================================================================ -->
     <Buttons>
 
-      <!-- Original: open the Sample Tool Window -->
+      <!-- Open Sample Tool Window (View > Other Windows) -->
       <Button guid="guidMyPackageCmdSet" id="ShowToolWindowId" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
         <Icon guid="ImageCatalogGuid" id="ImageIcon"/>
@@ -40,7 +45,7 @@
         </Strings>
       </Button>
 
-      <!-- Config Editor: open Config Editor Tool Window -->
+      <!-- Open Config Editor Tool Window (View > Other Windows) -->
       <Button guid="guidMyPackageCmdSet" id="CmdIdConfigEditor" priority="0x0101" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
         <Icon guid="ImageCatalogGuid" id="Settings"/>
@@ -51,7 +56,21 @@
         </Strings>
       </Button>
 
-      <!-- §6 — Toggle command (check-mark, appears in Tools menu) -->
+      <!-- ============================================================= -->
+      <!-- Settings dialog — xuất hiện trong Tools menu                  -->
+      <!-- Giống WakaTime > Settings trong ảnh mẫu                       -->
+      <!-- ============================================================= -->
+      <Button guid="guidMyPackageCmdSet" id="CmdIdSettings" priority="0x0100" type="Button">
+        <Parent guid="guidMyPackageCmdSet" id="SettingsCmdGroup"/>
+        <Icon guid="ImageCatalogGuid" id="Settings"/>
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>Async Tool Window Sample Settings...</ButtonText>
+          <CommandName>AsyncToolWindowSample.Settings</CommandName>
+        </Strings>
+      </Button>
+
+      <!-- §6 — Toggle command -->
       <Button guid="guidMyPackageCmdSet" id="CmdIdToggleFeature" priority="0x0200" type="Button">
         <Parent guid="guidMyPackageCmdSet" id="DynamicCmdGroup"/>
         <CommandFlag>DynamicItemStart</CommandFlag>
@@ -73,7 +92,7 @@
         </Strings>
       </Button>
 
-      <!-- §6 — Context-info command (Tools menu) -->
+      <!-- §6 — Context-info (Tools menu) -->
       <Button guid="guidMyPackageCmdSet" id="CmdIdContextInfo" priority="0x0100" type="Button">
         <Parent guid="guidMyPackageCmdSet" id="DynamicCmdGroup"/>
         <CommandFlag>DefaultDisabled</CommandFlag>
@@ -83,7 +102,7 @@
         </Strings>
       </Button>
 
-      <!-- §6 — Context-info also in code-editor right-click menu -->
+      <!-- §6 — Context-info (code-editor right-click) -->
       <Button guid="guidMyPackageCmdSet" id="CmdIdContextInfo" priority="0x0100" type="Button">
         <Parent guid="guidMyPackageCmdSet" id="ContextMenuGroup"/>
         <CommandFlag>DefaultDisabled</CommandFlag>
@@ -100,7 +119,6 @@
   <!--  Keyboard shortcuts                                                  -->
   <!-- ================================================================== -->
   <KeyBindings>
-    <!-- Ctrl+Shift+F9 → Toggle Feature -->
     <KeyBinding guid="guidMyPackageCmdSet" id="CmdIdToggleFeature"
                 editor="guidVSStd97" key1="F9" mod1="Control Shift"/>
   </KeyBindings>
@@ -109,16 +127,15 @@
   <!--  Symbols                                                             -->
   <!-- ================================================================== -->
   <Symbols>
-    <GuidSymbol name="guidMyPackage"    value="{6e3b2e95-902b-4385-a966-30c06ab3c7a6}" />
+    <GuidSymbol name="guidMyPackage" value="{6e3b2e95-902b-4385-a966-30c06ab3c7a6}" />
 
     <GuidSymbol name="guidMyPackageCmdSet" value="{9cc1062b-4c82-46d2-adcb-f5c17d55fb85}">
-      <!-- Existing -->
       <IDSymbol name="ShowToolWindowId"   value="0x0100" />
-      <!-- §Config -->
       <IDSymbol name="CmdIdConfigEditor"  value="0x0300" />
-      <!-- §6 new commands -->
+      <IDSymbol name="CmdIdSettings"      value="0x0400" />
       <IDSymbol name="DynamicCmdGroup"    value="0x1100" />
       <IDSymbol name="ContextMenuGroup"   value="0x1200" />
+      <IDSymbol name="SettingsCmdGroup"   value="0x1300" />
       <IDSymbol name="CmdIdToggleFeature" value="0x0200" />
       <IDSymbol name="CmdIdDocAction"     value="0x0201" />
       <IDSymbol name="CmdIdContextInfo"   value="0x0202" />

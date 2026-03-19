@@ -1,0 +1,65 @@
+(feat) 2026-03-19 – §Settings: Settings dialog từ Tools menu (kiểu WakaTime Settings)
+
+feat(SettingsDialog): add modal WPF settings dialog accessible via Tools menu
+feat(ShowSettings): register menu command "Async Tool Window Sample Settings..."
+fix(csproj): add System.Xml.Linq reference, add all new Compile/Page entries
+
+Nguyên nhân:
+  Người dùng muốn mở settings qua Tools menu theo kiểu WakaTime Settings —
+  một popup dialog modal với các field nhập liệu, Save/Cancel buttons.
+
+Thay đổi chính:
+
+  NEW src/ToolWindows/SettingsDialog.xaml
+    - WPF Window, ResizeMode=NoResize, WindowStartupLocation=CenterScreen
+    - Fields: ServerUrl (TextBox), ApiKey (PasswordBox), Timeout, MaxResults
+    - ComboBox OutputFormat: JSON/XML/CSV/Plain Text
+    - CheckBox: Debug, Show Status Bar
+    - Validation border (màu cam) hiện lỗi inline
+    - Buttons: Save (IsDefault=True), Cancel (IsCancel=True)
+
+  NEW src/ToolWindows/SettingsDialog.xaml.cs
+    - OnLoaded(): load từ ConfigurationService
+    - Validate(): URL format, int range
+    - BtnSave_Click(): validate → Config.Set() × 8 keys → log → StatusBar → Close
+    - BtnCancel_Click(): Close
+
+  NEW src/Commands/ShowSettings.cs
+    - MenuCommand CmdIdSettings (0x0400)
+    - Execute(): new SettingsDialog(Config, OutputWindow, StatusBar).ShowDialog()
+
+  MOD src/PackageGuids.cs
+    - +CmdIdSettings = 0x0400
+
+  MOD src/VSCommandTable.vsct
+    - +Group SettingsCmdGroup (parent=IDM_VS_MENU_TOOLS, priority=0x0800)
+    - +Button CmdIdSettings → "Async Tool Window Sample Settings..."
+    - +IDSymbol SettingsCmdGroup = 0x1300
+    - +IDSymbol CmdIdSettings    = 0x0400
+
+  MOD src/MyPackage.cs
+    - +await ShowSettings.InitializeAsync(this)
+
+  MOD src/AsyncToolWindowSample.csproj
+    - +Compile ShowSettings.cs
+    - +Compile SettingsDialog.xaml.cs
+    - +Page SettingsDialog.xaml
+    - +Reference System.Xml.Linq  ← fix lỗi CS0234 XDocument/XElement
+
+  NEW docs/tutorials/settings-dialog_2026-03-19.md
+
+Tác dụng:
+  - Tools menu xuất hiện "Async Tool Window Sample Settings..."
+  - Click → mở popup modal, load config hiện tại
+  - Save → validate + lưu file XML + log ra Output + update StatusBar
+  - Cancel → đóng không lưu
+
+Files thay đổi:
+  - src/ToolWindows/SettingsDialog.xaml          (NEW)
+  - src/ToolWindows/SettingsDialog.xaml.cs       (NEW)
+  - src/Commands/ShowSettings.cs                 (NEW)
+  - src/PackageGuids.cs
+  - src/VSCommandTable.vsct
+  - src/MyPackage.cs
+  - src/AsyncToolWindowSample.csproj
+  - docs/tutorials/settings-dialog_2026-03-19.md (NEW)

@@ -59,9 +59,10 @@
     <Compile Include="MyPackage.cs" />
     <Compile Include="PackageGuids.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <!-- Commands -->
     <Compile Include="Commands\ShowToolWindow.cs" />
-    <!-- Configuration Editor (§Config) — NEW -->
     <Compile Include="Commands\ShowConfigEditor.cs" />
+    <Compile Include="Commands\ShowSettings.cs" />
     <!-- Services -->
     <Compile Include="Services\OutputWindowService.cs" />
     <Compile Include="Services\StatusBarService.cs" />
@@ -74,20 +75,22 @@
     </Compile>
     <Compile Include="Services\MenuService.cs" />
     <Compile Include="Services\ToolbarService.cs" />
-    <!-- Configuration Editor Service — NEW -->
     <Compile Include="Services\ConfigurationService.cs" />
     <!-- Tagging -->
     <Compile Include="Tagging\TodoTagger.cs" />
-    <!-- Tool Window -->
+    <!-- Tool Windows -->
     <Compile Include="ToolWindows\SampleToolWindow.cs" />
     <Compile Include="ToolWindows\SampleToolWindowControl.xaml.cs">
       <DependentUpon>SampleToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\SampleToolWindowState.cs" />
-    <!-- Configuration Editor Tool Window — NEW -->
     <Compile Include="ToolWindows\ConfigEditorWindow.cs" />
     <Compile Include="ToolWindows\ConfigEditorControl.xaml.cs">
       <DependentUpon>ConfigEditorControl.xaml</DependentUpon>
+    </Compile>
+    <!-- Settings Dialog -->
+    <Compile Include="ToolWindows\SettingsDialog.xaml.cs">
+      <DependentUpon>SettingsDialog.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -120,12 +123,10 @@
     <Reference Include="EnvDTE90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <!-- VSLangProj: VSProject.References (§5) -->
     <Reference Include="VSLangProj, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <!-- CommandBars: needed by ToolbarService (§7) -->
     <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
@@ -246,8 +247,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <!-- Configuration Editor XAML — NEW -->
     <Page Include="ToolWindows\ConfigEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <!-- Settings Dialog XAML -->
+    <Page Include="ToolWindows\SettingsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
