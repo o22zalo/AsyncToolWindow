@@ -5,7 +5,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [Unreleased] – 2026-03-19 (feat: selection-api)
+## [Unreleased] – 2026-03-19 (patch: CS0122-getservice)
+
+### Fixed
+
+#### `src/Services/SelectionService.cs`
+- **CS0122 (×2) – `AsyncPackage.GetService(Type)` inaccessible:**
+  `AsyncPackage.GetService()` là `protected internal` — không thể gọi từ class bên ngoài.
+  **Fix:** Lưu `AsyncPackage` vào `IServiceProvider _serviceProvider` (interface public mà
+  `AsyncPackage` implement). Thay tất cả `_package.GetService(...)` bằng
+  `_serviceProvider.GetService(...)` ở dòng 69 (DTE) và dòng 164 (SVsTextManager).
+  `GetServiceAsync()` trong `InitializeAsync()` vẫn dùng `_package` bình thường
+  vì đó là method `public` của `AsyncPackage`.
+
+---
+
+
 
 ### Added
 

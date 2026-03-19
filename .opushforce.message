@@ -1,4 +1,24 @@
-feat(selection-api): add SelectionService with DTE (Tier 1) and IWpfTextView MEF (Tier 2) support
+fix(selection-service): CS0122 GetService inaccessible – use IServiceProvider
+
+Date: 2026-03-19
+Affects:
+  - Services/SelectionService.cs
+
+--- Details ---
+
+Root cause:
+  AsyncPackage.GetService(Type) is `protected internal`.
+  Calling it from an external service class (SelectionService) triggers CS0122.
+
+Fix:
+  Cast the AsyncPackage reference to IServiceProvider (a public interface it implements).
+  Store as `private readonly IServiceProvider _serviceProvider = package`.
+  Replace _package.GetService(...) → _serviceProvider.GetService(...) at:
+    - Line 69:  GetDteSelection()      → typeof(DTE)
+    - Line 164: GetActiveWpfTextView() → typeof(SVsTextManager)
+
+  GetServiceAsync() in InitializeAsync() is unaffected (public method on AsyncPackage).
+
 
 Date: 2026-03-19
 Affects:

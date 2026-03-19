@@ -26,12 +26,16 @@ namespace AsyncToolWindowSample.Services
     {
         private readonly AsyncPackage _package;
 
+        // IServiceProvider (public interface on AsyncPackage) — used for GetService calls
+        private readonly IServiceProvider _serviceProvider;
+
         // MEF bridge — resolved once in InitializeAsync
         private IVsEditorAdaptersFactoryService _adaptersFactory;
 
         public SelectionService(AsyncPackage package)
         {
-            _package = package ?? throw new ArgumentNullException(nameof(package));
+            _package         = package ?? throw new ArgumentNullException(nameof(package));
+            _serviceProvider = package;   // AsyncPackage implements IServiceProvider (public)
         }
 
         // ------------------------------------------------------------------ //
@@ -66,7 +70,7 @@ namespace AsyncToolWindowSample.Services
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            var dte = _package.GetService(typeof(DTE)) as DTE2;
+            var dte = _serviceProvider.GetService(typeof(DTE)) as DTE2;
             return dte?.ActiveDocument?.Selection as TextSelection;
         }
 
@@ -161,7 +165,7 @@ namespace AsyncToolWindowSample.Services
                 return null;
 
             var textManager =
-                _package.GetService(typeof(SVsTextManager)) as IVsTextManager;
+                _serviceProvider.GetService(typeof(SVsTextManager)) as IVsTextManager;
             if (textManager == null) return null;
 
             textManager.GetActiveView(fMustHaveFocus: 1, pBuffer: null,
