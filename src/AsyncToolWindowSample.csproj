@@ -58,6 +58,8 @@
     <Compile Include="MyPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\ShowToolWindow.cs" />
+    <Compile Include="Services\OutputWindowService.cs" />
+    <Compile Include="Services\StatusBarService.cs" />
     <Compile Include="ToolWindows\SampleToolWindow.cs" />
     <Compile Include="ToolWindows\SampleToolWindowControl.xaml.cs">
       <DependentUpon>SampleToolWindowControl.xaml</DependentUpon>
@@ -82,6 +84,8 @@
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.7.18\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="DevExpress.Data.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpo.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
